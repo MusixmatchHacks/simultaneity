@@ -43,8 +43,10 @@
 
 
 	d3.json('./scripts/world.json', function(error, world) {
-		if (error)
+		if (error) {
+			console.log("There was an error");
 			throw error;
+		}
 
 		svg.append('path')
 			.datum(topojson.feature(world, world.objects.land))
