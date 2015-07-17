@@ -1,9 +1,11 @@
 {
-  "name": "stereographicmap",
+  "name": "simultaneity",
   "private": true,
   "dependencies": {
     "jquery": "~1.11.1",
-    "modernizr": "~2.8.2"
+    "modernizr": "~2.8.2",
+    "d3": "~3.5.6",
+    "topojson": "~1.6.19"
   },
   "devDependencies": {
     "chai": "~3.1.0",
