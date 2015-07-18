@@ -1,6 +1,10 @@
 (function() {
 	'use strict';
 
+	// let us see if we have the data here 
+	var MAX_DATA_LENGTH = 10000;
+
+	var truncatedData = sample_data.slice(0, MAX_DATA_LENGTH);
 
 	// The width and height properties of the map
 	var width = window.innerWidth,
@@ -15,16 +19,9 @@
 		.attr('height', height);
 
 	var projection = d3.geo.equirectangular()
-		.scale(250)
+		.scale(width/5.7)
 		.translate([width / 2, height / 2]);
 		// .precision(.1);
-
-	// let us locate a few points on the map
-	var testerPoint = projection([73, 19]);
-
-	d3.select('#location0')
-		.attr('cx', testerPoint[0])
-		.attr('cy', testerPoint[1]);
 
 	var path = d3.geo.path()
 		.projection(projection);
@@ -53,6 +50,28 @@
 	});
 
 	d3.select(self.frameElement).style("height", height + "px");
+
+	function getCartFromDeg(longitude, lattitude) {
+		var degPos = [];
+		degPos.push(longitude);
+		degPos.push(lattitude);
+		console.log(degPos);
+		return projection(degPos);
+	}
+
+	// Add the data points on the map
+	labels.selectAll('circle')
+		.data(truncatedData)
+		.enter()
+		.append('circle')
+		.classed('location', true)
+		.attr('r', '1px')
+		.each(function(d) {
+			var cartPos = getCartFromDeg(d.long, d.lat); // Cartesian position
+			d3.select(this).attr('cx', cartPos[0]);
+			d3.select(this).attr('cy', cartPos[1]);
+		});
+
 
 
 })();
