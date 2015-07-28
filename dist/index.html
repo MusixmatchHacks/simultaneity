@@ -1,3 +1,46 @@
-<!DOCTYPE html> <html class=no-js> <head> <meta charset=utf-8> <title>simultaneity</title> <meta name=description content=""> <meta name=viewport content="width=device-width"> <link rel="shortcut icon" href=/6df2b309.favicon.ico> <!-- Place favicon.ico and apple-touch-icon.png in the root directory --> <link rel=stylesheet href=styles/f3ab4e3d.main.css> <script src=scripts/vendor/1cb556bb.modernizr.js></script>  <body> <!--[if lt IE 10]>
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>simultaneity</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    <!-- build:js scripts/vendor/modernizr.js -->
+    <script src="bower_components/modernizr/modernizr.js"></script>
+    <!-- endbuild -->
+
+  </head>
+  <body>
+    <!--[if lt IE 10]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]--> <svg id=labels> </svg> <svg id=world fill=#000000></svg> <script src=scripts/fc6f2ee6.vendor.js></script> <script src=scripts/sample_data.js></script> <script src=scripts/c1969a74.main.js></script>  
+    <![endif]-->
+
+    <svg id = "labels">
+    </svg>
+    <svg id = "world" fill = "#000000"></svg>
+
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/topojson/topojson.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+        
+        <script src = "scripts/sample_data.js"></script>
+        <!-- build:js({app,.tmp}) scripts/main.js -->
+        <script src = "scripts/world.json"></script>
+        <script src="scripts/main.js"></script>
+        <!-- endbuild -->
+</body>
+</html>

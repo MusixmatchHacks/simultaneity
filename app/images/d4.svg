@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="8px" height="6px" viewBox="0 0 8 6" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.2 (9961) - http://www.bohemiancoding.com/sketch -->
+    <title>d4</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Artboard-1" sketch:type="MSArtboardGroup" transform="translate(-2.000000, 0.000000)">
+            <g id="d4" sketch:type="MSLayerGroup" transform="translate(5.272845, 3.278109) rotate(20.000000) translate(-5.272845, -3.278109) translate(0.772845, -0.221891)">
+                <path d="M5.45510913,5.50715577 L8.45278517,0.709871303" id="Line-3" stroke="#CAC2F2" stroke-linecap="square" opacity="0.3" sketch:type="MSShapeGroup"></path>
+                <path d="M4.45961509,6.28588687 L0.533519099,2.34257171" id="Line-4" stroke="#CAC2F2" stroke-linecap="square" opacity="0.3" sketch:type="MSShapeGroup" transform="translate(2.856744, 3.892413) scale(-1, 1) rotate(93.000000) translate(-2.856744, -3.892413) "></path>
+                <circle id="Oval-1" fill="#FFFFFF" sketch:type="MSShapeGroup" cx="5.5" cy="5.5" r="0.5"></circle>
+            </g>
+        </g>
+    </g>
+</svg>
