@@ -87,7 +87,7 @@
 			.enter()
 			.append('circle')
 			.classed('location', true)
-			.attr('r', '1px')
+			.attr('r', 0.5)
 			.style('opacity', 0)
 			.each(function(d) {
 				var cartPos = getCartFromDeg(d[5], d[6]); // Cartesian position
