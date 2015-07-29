@@ -71,33 +71,39 @@
 	}
 
 
+	var labelText = "label";
+	var labelIndex = 0;
 	function addDataPointsCircles(data) {
-		// Data points rendered using svg circles
-		labels.selectAll('circle')
+		var newLayerName = labelText + labelIndex;
+		$(document.body).prepend(
+			"<svg class = 'labels' id = '" + newLayerName + "' width = '" + width +"px' height ='" + height + "px' ></svg>"
+		);
+		d3.select('#' + newLayerName).selectAll('circle')
 			.data(data)
 			.enter()
 			.append('circle')
 			.classed('location', true)
-			.attr('r', '5px')
+			.attr('r', '1px')
+			.style('opacity', 0)
 			.each(function(d) {
 				var cartPos = getCartFromDeg(d[5], d[6]); // Cartesian position
 				d3.select(this).attr('cx', cartPos[0]);
 				d3.select(this).attr('cy', cartPos[1]);
-			});
+			})
+			.transition().duration(1000).delay(100)
+			.style('opacity', 1);
 	}
 
 
-	var dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views?callback=?";
+	var dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views";
 
 	function getJSON(url) {
 		return $.getJSON(url);
 	}
 
 	function getDatPointPromise(dataPointsUrl) {
-		console.log("Loading new data");
 		getJSON(dataPointsUrl).then(function(response) {
 			addDataPointsCircles(response);
-			console.log("loaded new data");
 		});
 	}
 
