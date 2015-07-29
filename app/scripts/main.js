@@ -46,9 +46,15 @@
 	// Add the data points on the map
 
 	// Data points rendered using svg images 
-
+	var labelText = "label";
+	var labelIndex = 0;
 	function addDataPointsTails(data) {
-		labels.selectAll('image')
+		var newLayerName = labelText + labelIndex;
+		$(document.body).prepend(
+			"<svg class = 'labels' id = '" + newLayerName + "' width = '" + width +"px' height ='" + height + "px' ></svg>"
+		);
+
+		d3.select('#' + newLayerName).selectAll('image')
 			.data(data)
 			.enter()
 			.append('image')
@@ -71,8 +77,6 @@
 	}
 
 
-	var labelText = "label";
-	var labelIndex = 0;
 	function addDataPointsCircles(data) {
 		var newLayerName = labelText + labelIndex;
 		$(document.body).prepend(
@@ -92,6 +96,8 @@
 			})
 			.transition().duration(1000).delay(100)
 			.style('opacity', 1);
+
+		labelIndex++;
 	}
 
 
