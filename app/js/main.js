@@ -2,9 +2,6 @@
 require('../sass/main_style.sass');
 
 // Include the required modules
-var d3 = require('../../bower_components/d3/d3.min.js');
-var $ = require('../../bower_components/jquery/dist/jquery.min.js');
-var topojson = require('../../bower_components/topojson/topojson.js');
 var lodash = require('lodash');
 
 // The width and height properties of the map
