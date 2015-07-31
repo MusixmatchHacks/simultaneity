@@ -1,7 +1,6 @@
 {
-  "name": "testingwebpack",
+  "name": "simultaneity",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,5 +20,14 @@
     "style-loader": "^0.12.3",
     "webpack": "^1.10.5",
     "webpack-dev-server": "^1.10.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MusixmatchHacks/simultaneity.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MusixmatchHacks/simultaneity/issues"
+  },
+  "homepage": "https://github.com/MusixmatchHacks/simultaneity#readme",
+  "description": ""
 }
