@@ -2,7 +2,6 @@
 require('../sass/main_style.sass');
 
 // Include the required modules
-var lodash = require('lodash');
 
 // The width and height properties of the map
 var osColorManager = require('./osColorManager');
@@ -27,7 +26,7 @@ var path = d3.geo.path()
 	.projection(projection);
 
 
-d3.json("../app/js/data/world.json", function(error, world) {
+d3.json("./vendors/world.json", function(error, world) {
 	if (error) throw error;
 
 	svg.insert("path", ".graticule")
