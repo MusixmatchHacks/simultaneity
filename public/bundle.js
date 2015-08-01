@@ -60,6 +60,7 @@
 
 	// The width and height properties of the map
 	var osColorManager = __webpack_require__(2);
+	osColorManager.logUniqueOSNames();
 
 	var width = window.innerWidth,
 	    height = window.innerHeight;
@@ -139,10 +140,59 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var sampleData = __webpack_require__(3);
+
+	/**
+	 * A module to export functionality of retreiving various informations from a given requestId
+	 * @namespace osColorManager
+	 */
 	var colorManager = {
+
+		/**
+	 * Logs the Unique os names present in the sample data 
+	 * @memberof osColorManager
+	 * @method getUniqueOSNames
+	 */
+		logUniqueOSNames: function logUniqueOSNames() {
+			// Create a new set
+			var osNameSet = new Set();
+			for (var requestId in sampleData) {
+				osNameSet.add(sampleData[requestId]["name"]);
+			} // Now let us print all the unique names
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
+
+			try {
+				for (var _iterator = osNameSet[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var _name = _step.value;
+
+					console.log(_name);
+				}
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator["return"]) {
+						_iterator["return"]();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
+		},
+
+		/**
+	 * Given the requestId returns the name of the os from which the request is made from 
+	 * @memberof osColorManager
+	 * @method getOSName
+	 * @param {number} requestId - A unique number identifying a request 
+	 */
 		getOSName: function getOSName(requestId) {
 			var requestObject = sampleData[requestId];
 			if (requestObject !== undefined) {
@@ -152,20 +202,33 @@
 			}
 		},
 
+		/**
+	 * Given the requestId returns a unique color for the corresponding OS. Like green for Android e.t.c
+	 * @memberof osColorManager
+	 * @method getOsColor
+	 * @param {number} requestId - A unique number identifying a request 
+	 */
 		getOSColor: function getOSColor(requestId) {
 			var osName = this.getOSName(requestId);
 			switch (osName) {
 				case 'android':
-					return "#A4C639";
+					// return "#A4C639";
+					return "#000";
 					break;
 				case 'mac_desktop':
+					// return "#FFFFFF";
+					return "#000";
+					break;
+				case 'azlyrics':
 					return "#FFFFFF";
 					break;
 				case 'other':
-					return "#0000FF";
+					// return "#0000FF"
+					return "#000";
 					break;
 				default:
-					return "#5EA9DD";
+					// return "#5EA9DD";
+					return "#000";
 					break;
 			}
 		}

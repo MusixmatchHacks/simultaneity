@@ -10,6 +10,7 @@ const INDEX_APP_REQUEST_ID = 10;
 
 // The width and height properties of the map
 let osColorManager = require('./osColorManager');
+osColorManager.logUniqueOSNames();
 
 let width = window.innerWidth,
 	height = window.innerHeight;
