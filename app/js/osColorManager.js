@@ -1,7 +1,7 @@
-var sampleData = require('./app_info.js');
-var colorManager = {
+let sampleData = require('./app_info.js');
+let colorManager = {
 	getOSName : function(requestId) {
-		var requestObject = sampleData[requestId];
+		let requestObject = sampleData[requestId];
 		if(requestObject !== undefined) {
 			return requestObject["name"];
 		} else {
@@ -10,7 +10,7 @@ var colorManager = {
 	},
 
 	getOSColor : function(requestId) {
-		var osName = this.getOSName(requestId);
+		let osName = this.getOSName(requestId);
 		switch(osName) {
 			case 'android' : 
 				return "#A4C639";

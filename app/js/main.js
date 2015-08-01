@@ -3,26 +3,31 @@ require('../sass/main_style.sass');
 
 // Include the required modules
 
-// The width and height properties of the map
-var osColorManager = require('./osColorManager');
+// CONSTANTS
+const INDEX_LONGITUDE= 5;
+const INDEX_LATTITUDE = 6;
+const INDEX_APP_REQUEST_ID = 10;
 
-var width = window.innerWidth,
+// The width and height properties of the map
+let osColorManager = require('./osColorManager');
+
+let width = window.innerWidth,
 	height = window.innerHeight;
 
-var labels = d3.select('#labels')
+let labels = d3.select('#labels')
 	.attr('width', width)
 	.attr('height', height);
 
-var svg = d3.select('#world')
+let svg = d3.select('#world')
 	.attr('width', width)
 	.attr('height', height);
 
-var projection = d3.geo.equirectangular()
+let projection = d3.geo.equirectangular()
 	.scale(width / 5.7)
 	.translate([width / 2, height / 2])
 	.precision(.1);
 
-var path = d3.geo.path()
+let path = d3.geo.path()
 	.projection(projection);
 
 
@@ -37,11 +42,8 @@ d3.json("./vendors/world.json", function(error, world) {
 
 d3.select(self.frameElement).style("height", height + "px");
 
-function getCartFromDeg(longitude, lattitude) {
-	var degPos = [];
-	degPos.push(longitude);
-	degPos.push(lattitude);
-	return projection(degPos);
+function getCartesianCoords(longitude, lattitude) {
+	return projection([longitude, lattitude]);
 }
 
 function randomRotateDeg(bottom, top) {
@@ -50,39 +52,11 @@ function randomRotateDeg(bottom, top) {
 // Add the data points on the map
 
 // Data points rendered using svg images 
-var labelText = "label";
-var labelIndex = 0;
-function addDataPointsTails(data) {
-	var newLayerName = labelText + labelIndex;
-	$(document.body).prepend(
-		"<svg class = 'labels' id = '" + newLayerName + "' width = '" + width +"px' height ='" + height + "px' ></svg>"
-	);
-
-	d3.select('#' + newLayerName).selectAll('image')
-		.data(data)
-		.enter()
-		.append('image')
-		.attr('xlink:href', '../images/dot.svg')
-		.attr('width', '5px')
-		.attr('height', '5px')
-		.attr('opacity', 0)
-		.transition()
-		.duration(300).delay(100)
-		.attr('opacity', 1)
-		.each(function(d) {
-			var cartPos = getCartFromDeg(d[5], d[6]); // Cartesian position
-			d3.select(this)
-				.attr('x', cartPos[0] - 2.5)
-				.attr('y', cartPos[1] - 2.5)
-				.attr('transform', function(d) {
-					return 'rotate(' + randomRotateDeg(-180, 180) + ' ' + (cartPos[0] + 2.5) + ' ' + (cartPos[1] + 2.5) + ')';
-				});
-		});
-}
-
+let labelText = "label";
+let labelIndex = 0;
 
 function addDataPointsCircles(data) {
-	var newLayerName = labelText + labelIndex;
+	let newLayerName = labelText + labelIndex;
 	$(document.body).prepend(
 		"<svg class = 'labels' id = '" + newLayerName + "' width = '" + width +"px' height ='" + height + "px' ></svg>"
 	);
@@ -91,14 +65,15 @@ function addDataPointsCircles(data) {
 		.enter()
 		.append('circle')
 		.classed('location', true)
-		.attr('r', 0.5)
+		.attr('r', 1)
 		.style('opacity', 0)
 		.each(function(d) {
-			var cartPos = getCartFromDeg(d[5], d[6]); // Cartesian position
+			// Using destructuring arguments right over here 
+			let [x, y] = getCartesianCoords(d[INDEX_LONGITUDE], d[INDEX_LATTITUDE]);
 			d3.select(this)
-				.attr('cx', cartPos[0])
-				.attr('cy', cartPos[1])
-				.style('fill', osColorManager.getOSColor(d[10]));
+				.attr('cx', x)
+				.attr('cy', y)
+				.style('fill', osColorManager.getOSColor(d[INDEX_APP_REQUEST_ID]));
 		})
 		.transition().duration(1000).delay(100)
 		.style('opacity', 0.6);
@@ -107,7 +82,7 @@ function addDataPointsCircles(data) {
 }
 
 
-var dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views";
+let dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views";
 
 function getJSON(url) {
 	return $.getJSON(url);

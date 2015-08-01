@@ -47,9 +47,16 @@
 	// Require the styles
 	'use strict';
 
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+
 	__webpack_require__(1);
 
 	// Include the required modules
+
+	// CONSTANTS
+	var INDEX_LONGITUDE = 5;
+	var INDEX_LATTITUDE = 6;
+	var INDEX_APP_REQUEST_ID = 10;
 
 	// The width and height properties of the map
 	var osColorManager = __webpack_require__(2);
@@ -73,11 +80,8 @@
 
 	d3.select(self.frameElement).style("height", height + "px");
 
-	function getCartFromDeg(longitude, lattitude) {
-		var degPos = [];
-		degPos.push(longitude);
-		degPos.push(lattitude);
-		return projection(degPos);
+	function getCartesianCoords(longitude, lattitude) {
+		return projection([longitude, lattitude]);
 	}
 
 	function randomRotateDeg(bottom, top) {
@@ -88,24 +92,21 @@
 	// Data points rendered using svg images
 	var labelText = "label";
 	var labelIndex = 0;
-	function addDataPointsTails(data) {
-		var newLayerName = labelText + labelIndex;
-		$(document.body).prepend("<svg class = 'labels' id = '" + newLayerName + "' width = '" + width + "px' height ='" + height + "px' ></svg>");
-
-		d3.select('#' + newLayerName).selectAll('image').data(data).enter().append('image').attr('xlink:href', '../images/dot.svg').attr('width', '5px').attr('height', '5px').attr('opacity', 0).transition().duration(300).delay(100).attr('opacity', 1).each(function (d) {
-			var cartPos = getCartFromDeg(d[5], d[6]); // Cartesian position
-			d3.select(this).attr('x', cartPos[0] - 2.5).attr('y', cartPos[1] - 2.5).attr('transform', function (d) {
-				return 'rotate(' + randomRotateDeg(-180, 180) + ' ' + (cartPos[0] + 2.5) + ' ' + (cartPos[1] + 2.5) + ')';
-			});
-		});
-	}
 
 	function addDataPointsCircles(data) {
 		var newLayerName = labelText + labelIndex;
 		$(document.body).prepend("<svg class = 'labels' id = '" + newLayerName + "' width = '" + width + "px' height ='" + height + "px' ></svg>");
-		d3.select('#' + newLayerName).selectAll('circle').data(data).enter().append('circle').classed('location', true).attr('r', 0.5).style('opacity', 0).each(function (d) {
-			var cartPos = getCartFromDeg(d[5], d[6]); // Cartesian position
-			d3.select(this).attr('cx', cartPos[0]).attr('cy', cartPos[1]).style('fill', osColorManager.getOSColor(d[10]));
+		d3.select('#' + newLayerName).selectAll('circle').data(data).enter().append('circle').classed('location', true).attr('r', 1).style('opacity', 0).each(function (d) {
+			// Using destructuring arguments right over here
+
+			var _getCartesianCoords = getCartesianCoords(d[INDEX_LONGITUDE], d[INDEX_LATTITUDE]);
+
+			var _getCartesianCoords2 = _slicedToArray(_getCartesianCoords, 2);
+
+			var x = _getCartesianCoords2[0];
+			var y = _getCartesianCoords2[1];
+
+			d3.select(this).attr('cx', x).attr('cy', y).style('fill', osColorManager.getOSColor(d[INDEX_APP_REQUEST_ID]));
 		}).transition().duration(1000).delay(100).style('opacity', 0.6);
 
 		labelIndex++;
