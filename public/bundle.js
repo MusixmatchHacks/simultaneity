@@ -70,6 +70,7 @@
 	 */
 	var INDEX_APP_REQUEST_ID = 10;
 	var INDEX_SONG_NAME = 3;
+	var INDEX_ARTIST_NAME = 4;
 
 	/**
 	 * Number of miliseconds after which request is made to the endpoint for new data.
@@ -131,7 +132,15 @@
 		var randomY = _getRandomLocation2[1];
 
 		$topSongContainer.css({ 'top': randomY, 'left': randomX });
-		$topSongContainer.html(findMostSearchedSong(data).toUpperCase());
+
+		var _findMostSearchedSong = findMostSearchedSong(data);
+
+		var _findMostSearchedSong2 = _slicedToArray(_findMostSearchedSong, 2);
+
+		var mostSearchedSong = _findMostSearchedSong2[0];
+		var mostSearchedSongArtist = _findMostSearchedSong2[1];
+
+		$topSongContainer.html(mostSearchedSong.toUpperCase() + "<br/> - " + mostSearchedSongArtist);
 	}
 
 	function getRandomLocation(data) {
@@ -159,6 +168,7 @@
 	function findMostSearchedSong(data) {
 
 		var mostSearchedSong = "";
+		var mostSearchedSongArtist = "";
 		var mostSearchedSongCount = 0;
 
 		var songSearchCount = {};
@@ -181,6 +191,7 @@
 				if (songSearchCount[songName] >= mostSearchedSongCount) {
 					mostSearchedSong = songName;
 					mostSearchedSongCount = songSearchCount[songName];
+					mostSearchedSongArtist = currentData[INDEX_ARTIST_NAME];
 				}
 			}
 		} catch (err) {
@@ -198,7 +209,7 @@
 			}
 		}
 
-		return mostSearchedSong;
+		return [mostSearchedSong, mostSearchedSongArtist];
 	}
 
 	// Data points rendered using svg images

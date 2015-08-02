@@ -20,6 +20,7 @@ const INDEX_LATTITUDE = 6;
  */
 const INDEX_APP_REQUEST_ID = 10;
 const INDEX_SONG_NAME = 3;
+const INDEX_ARTIST_NAME = 4;
 
 /**
  * Number of miliseconds after which request is made to the endpoint for new data.
@@ -71,7 +72,8 @@ function getDatPointPromise(dataPointsUrl) {
 function showMostSearchedSong(data) {
 	let [randomX, randomY] = getRandomLocation(data);
 	$topSongContainer.css({'top' : randomY, 'left' : randomX});
-	$topSongContainer.html(findMostSearchedSong(data).toUpperCase());
+	let [mostSearchedSong, mostSearchedSongArtist] = findMostSearchedSong(data);
+	$topSongContainer.html(mostSearchedSong.toUpperCase() + "<br/> - " + mostSearchedSongArtist);
 }
 
 function getRandomLocation (data){
@@ -99,6 +101,7 @@ function getCartesianCoords(longitude, lattitude) {
 function findMostSearchedSong(data) {
 
 	let mostSearchedSong = ""
+	let mostSearchedSongArtist = "";
 	let mostSearchedSongCount = 0;
 
 	let songSearchCount= {};
@@ -114,10 +117,11 @@ function findMostSearchedSong(data) {
 		if(songSearchCount[songName] >= mostSearchedSongCount) {
 			mostSearchedSong = songName;
 			mostSearchedSongCount = songSearchCount[songName];
+			mostSearchedSongArtist = currentData[INDEX_ARTIST_NAME];
 		}
 	}
 
-	return mostSearchedSong;
+	return [mostSearchedSong, mostSearchedSongArtist];
 }
 
 
