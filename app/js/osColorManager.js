@@ -40,8 +40,7 @@ let colorManager = {
 
 	/**
 	 * An object that stores the HEX color codes for representing different operating systems
-	 * @type {Object}
-	 * @memberOf  oscolorManager
+	 * @memberof  osColorManager
 	 * @enum
 	 */
 	osColors : {

@@ -70,26 +70,23 @@
 	 */
 	var INDEX_APP_REQUEST_ID = 10;
 
+	var WorldMap = __webpack_require__(4);
 	var osColorManager = __webpack_require__(2);
 
-	var width = window.innerWidth,
-	    height = window.innerHeight;
+	WorldMap.init();
+	var projection = WorldMap.getProjection();
 
-	var labels = d3.select('#labels').attr('width', width).attr('height', height);
+	var _WorldMap$getDimensions = WorldMap.getDimensions();
 
-	var svg = d3.select('#world').attr('width', width).attr('height', height);
+	// Calls the API for data every two seconds and adds the data points to the map
 
-	var projection = d3.geo.equirectangular().scale(width / 5.7).translate([width / 2, height / 2]).precision(.1);
+	var _WorldMap$getDimensions2 = _slicedToArray(_WorldMap$getDimensions, 2);
 
-	var path = d3.geo.path().projection(projection);
-
-	d3.json("./vendors/world.json", function (error, world) {
-		if (error) throw error;
-
-		svg.insert("path", ".graticule").datum(topojson.feature(world, world.objects.land)).attr("class", "land").attr("d", path);
-	});
-
-	d3.select(self.frameElement).style("height", height + "px");
+	var width = _WorldMap$getDimensions2[0];
+	var height = _WorldMap$getDimensions2[1];
+	setInterval(function () {
+		getDatPointPromise(dataUrl);
+	}, 2000);
 
 	/**
 	 * Given the lattitude and logitude returns an array holding lattitude and logitude values converted to cartesian
@@ -142,11 +139,6 @@
 			addDataPointsCircles(response);
 		});
 	}
-
-	// Calls the API for data every two seconds and adds the data points to the map
-	setInterval(function () {
-		getDatPointPromise(dataUrl);
-	}, 2000);
 
 /***/ },
 /* 1 */
@@ -223,8 +215,7 @@
 
 		/**
 	  * An object that stores the HEX color codes for representing different operating systems
-	  * @type {Object}
-	  * @memberOf  oscolorManager
+	  * @memberof  osColorManager
 	  * @enum
 	  */
 		osColors: {
@@ -42415,6 +42406,64 @@
 	        "description": "Not categorized"
 	    }
 	}
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	/**
+	 * Module that handles, rendering, positioning and everything on the world map. 
+	 * @namespace WorldMap
+	 */
+	'use strict';
+
+	var WorldMap = {
+		/**
+	  * Initializes and places the world map in the viewport
+	  * @memberof WorldMap
+	  * @method
+	  */
+		init: function init() {
+			this.width = window.innerWidth;
+			this.height = window.innerHeight;
+
+			this.labels = d3.select('#labels').attr('width', this.width).attr('height', this.height);
+
+			var svg = d3.select('#world').attr('width', this.width).attr('height', this.height);
+
+			this.projection = d3.geo.equirectangular().scale(this.width / 5.7).translate([this.width / 2, this.height / 2]).precision(.1);
+
+			var path = d3.geo.path().projection(this.projection);
+
+			d3.json("./vendors/world.json", function (error, world) {
+				if (error) throw error;
+
+				svg.insert("path", ".graticule").datum(topojson.feature(world, world.objects.land)).attr("class", "land").attr("d", path);
+			});
+
+			d3.select(self.frameElement).style("height", this.height + "px");
+		},
+
+		/**
+	  * Returns d3 projection, that can be used in other modules for caluclation related to positioning.
+	  * @memberof WorldMap
+	  * @method  getProjection
+	  */
+		getProjection: function getProjection() {
+			return this.projection;
+		},
+
+		/**
+	  * Returns an array holding width and height of the WorldMap
+	  * @memberof WorldMap
+	  * @method  getDimensions
+	  */
+		getDimensions: function getDimensions() {
+			return [this.width, this.height];
+		}
+	};
+
+	module.exports = WorldMap;
 
 /***/ }
 /******/ ]);

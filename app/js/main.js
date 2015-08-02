@@ -20,38 +20,17 @@ const INDEX_LATTITUDE = 6;
  */
 const INDEX_APP_REQUEST_ID = 10;
 
+let WorldMap = require('./WorldMap.js');
 let osColorManager = require('./osColorManager');
 
-let width = window.innerWidth,
-	height = window.innerHeight;
+WorldMap.init();
+let projection = WorldMap.getProjection();
+let [width, height] = WorldMap.getDimensions();
 
-let labels = d3.select('#labels')
-	.attr('width', width)
-	.attr('height', height);
-
-let svg = d3.select('#world')
-	.attr('width', width)
-	.attr('height', height);
-
-let projection = d3.geo.equirectangular()
-	.scale(width / 5.7)
-	.translate([width / 2, height / 2])
-	.precision(.1);
-
-let path = d3.geo.path()
-	.projection(projection);
-
-
-d3.json("./vendors/world.json", function(error, world) {
-	if (error) throw error;
-
-	svg.insert("path", ".graticule")
-		.datum(topojson.feature(world, world.objects.land))
-		.attr("class", "land")
-		.attr("d", path);
-});
-
-d3.select(self.frameElement).style("height", height + "px");
+// Calls the API for data every two seconds and adds the data points to the map 
+setInterval(()=>{
+	getDatPointPromise(dataUrl);
+}, 2000);
 
 /**
  * Given the lattitude and logitude returns an array holding lattitude and logitude values converted to cartesian
@@ -115,7 +94,4 @@ function getDatPointPromise(dataPointsUrl) {
 	});
 }
 
-// Calls the API for data every two seconds and adds the data points to the map 
-setInterval(()=>{
-	getDatPointPromise(dataUrl);
-}, 2000);
+
