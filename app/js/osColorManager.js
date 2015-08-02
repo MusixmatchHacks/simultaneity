@@ -23,7 +23,8 @@ let colorManager = {
 	},
 
 	/**
-	* Given the requestId returns the name of the os from which the request is made from 
+	* Given the requestId returns the name of the os from which the request is made from.
+	* Returns an empty string if passed in requestId cannot be validated
 	* @memberof osColorManager
 	* @method getOSName
 	* @param {number} requestId - A unique number identifying a request 
@@ -38,6 +39,21 @@ let colorManager = {
 	},
 
 	/**
+	 * An object that stores the HEX color codes for representing different operating systems
+	 * @type {Object}
+	 * @memberOf  oscolorManager
+	 * @enum
+	 */
+	osColors : {
+		'color_android' : '#A4C639',
+		'color_windows' : '#0670C4',
+		'color_mac' : '#CCCCCC',
+		'color_ios' : '#55ACEE',
+		'color_azlyrics' : '#CCCCDD',
+		'color_default' : '#D8D8D8'
+	},
+
+	/**
 	* Given the requestId returns a unique color for the corresponding OS. Like green for Android e.t.c
 	* @memberof osColorManager
 	* @method getOsColor
@@ -47,23 +63,24 @@ let colorManager = {
 		let osName = this.getOSName(requestId);
 		switch(osName) {
 			case 'android' : 
-				// return "#A4C639";
-				return "#000";
+				return this.osColors.color_android;
+				break;
+			case 'win7' : 
+			case 'win8' :
+			case 'win_desktop' : 
+				return this.osColors.color_windows;
 				break;
 			case 'mac_desktop' :
-				// return "#FFFFFF";
-				return "#000";
+				return this.osColors.color_mac;
 				break;
 			case 'azlyrics' :
-				return "#FFFFFF";
+				return this.osColors.color_azlyrics;
 				break;
-			case 'other' : 
-				// return "#0000FF"
-				return "#000";
+			case 'ios_clip' : 
+				return this.osColors.color_ios;
 				break;
 			default : 
-				// return "#5EA9DD";
-				return "#000";
+				return this.osColors.color_default;
 				break;
 		}
 	}

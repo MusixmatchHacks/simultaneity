@@ -54,13 +54,23 @@
 	// Include the required modules
 
 	// CONSTANTS
+	/**
+	 * Index for the longitude data from the retreived array from endpoint
+	 * @type {Number}
+	 */
 	var INDEX_LONGITUDE = 5;
+	/**
+	 * index for the lattitude data from the retreived array from endpoint
+	 * @type {Number}
+	 */
 	var INDEX_LATTITUDE = 6;
+	/**
+	 * Index for the app_request_id data from the retreived array from endpoint
+	 * @type {Number}
+	 */
 	var INDEX_APP_REQUEST_ID = 10;
 
-	// The width and height properties of the map
 	var osColorManager = __webpack_require__(2);
-	osColorManager.logUniqueOSNames();
 
 	var width = window.innerWidth,
 	    height = window.innerHeight;
@@ -81,14 +91,16 @@
 
 	d3.select(self.frameElement).style("height", height + "px");
 
+	/**
+	 * Given the lattitude and logitude returns an array holding lattitude and logitude values converted to cartesian
+	 * coordinates for placing them on the map.
+	 * @param  {number} longitude Longitude e.g. (15.34)
+	 * @param  {number} lattitude Lattitude e.g. (33)
+	 * @return {array}           Array with two elements each corresponding to Cartesian values of longitude and lattitude
+	 */
 	function getCartesianCoords(longitude, lattitude) {
 		return projection([longitude, lattitude]);
 	}
-
-	function randomRotateDeg(bottom, top) {
-		return Math.floor(Math.random() * (1 + top - bottom)) + bottom;
-	}
-	// Add the data points on the map
 
 	// Data points rendered using svg images
 	var labelText = "label";
@@ -97,7 +109,7 @@
 	function addDataPointsCircles(data) {
 		var newLayerName = labelText + labelIndex;
 		$(document.body).prepend("<svg class = 'labels' id = '" + newLayerName + "' width = '" + width + "px' height ='" + height + "px' ></svg>");
-		d3.select('#' + newLayerName).selectAll('circle').data(data).enter().append('circle').classed('location', true).attr('r', 1).style('opacity', 0).each(function (d) {
+		d3.select('#' + newLayerName).selectAll('circle').data(data).enter().append('circle').classed('location', true).attr('r', 0.8).style('opacity', 0).each(function (d) {
 			// Using destructuring arguments right over here
 
 			var _getCartesianCoords = getCartesianCoords(d[INDEX_LONGITUDE], d[INDEX_LATTITUDE]);
@@ -113,19 +125,25 @@
 		labelIndex++;
 	}
 
+	/**
+	 * Url that is pinged after every few seconds to get the new set of data.
+	 * @type {String}
+	 */
 	var dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views";
 
-	function getJSON(url) {
-		return $.getJSON(url);
-	}
-
+	/**
+	 * Gets and adds data points to the world map from the passed in dataPointsUrl
+	 * @method
+	 * @param  {string} Endpoint from where data is to be retrieved 
+	 * @return {nothing}
+	 */
 	function getDatPointPromise(dataPointsUrl) {
-		getJSON(dataPointsUrl).then(function (response) {
+		$.getJSON(dataPointsUrl).then(function (response) {
 			addDataPointsCircles(response);
 		});
 	}
 
-	// set some amount of data or whatever right over here
+	// Calls the API for data every two seconds and adds the data points to the map
 	setInterval(function () {
 		getDatPointPromise(dataUrl);
 	}, 2000);
@@ -188,7 +206,8 @@
 		},
 
 		/**
-	 * Given the requestId returns the name of the os from which the request is made from 
+	 * Given the requestId returns the name of the os from which the request is made from.
+	 * Returns an empty string if passed in requestId cannot be validated
 	 * @memberof osColorManager
 	 * @method getOSName
 	 * @param {number} requestId - A unique number identifying a request 
@@ -203,6 +222,21 @@
 		},
 
 		/**
+	  * An object that stores the HEX color codes for representing different operating systems
+	  * @type {Object}
+	  * @memberOf  oscolorManager
+	  * @enum
+	  */
+		osColors: {
+			'color_android': '#A4C639',
+			'color_windows': '#0670C4',
+			'color_mac': '#CCCCCC',
+			'color_ios': '#55ACEE',
+			'color_azlyrics': '#CCCCDD',
+			'color_default': '#D8D8D8'
+		},
+
+		/**
 	 * Given the requestId returns a unique color for the corresponding OS. Like green for Android e.t.c
 	 * @memberof osColorManager
 	 * @method getOsColor
@@ -212,23 +246,24 @@
 			var osName = this.getOSName(requestId);
 			switch (osName) {
 				case 'android':
-					// return "#A4C639";
-					return "#000";
+					return this.osColors.color_android;
+					break;
+				case 'win7':
+				case 'win8':
+				case 'win_desktop':
+					return this.osColors.color_windows;
 					break;
 				case 'mac_desktop':
-					// return "#FFFFFF";
-					return "#000";
+					return this.osColors.color_mac;
 					break;
 				case 'azlyrics':
-					return "#FFFFFF";
+					return this.osColors.color_azlyrics;
 					break;
-				case 'other':
-					// return "#0000FF"
-					return "#000";
+				case 'ios_clip':
+					return this.osColors.color_ios;
 					break;
 				default:
-					// return "#5EA9DD";
-					return "#000";
+					return this.osColors.color_default;
 					break;
 			}
 		}
