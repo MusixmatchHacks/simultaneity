@@ -69,10 +69,20 @@
 	 * @type {Number}
 	 */
 	var INDEX_APP_REQUEST_ID = 10;
+	var INDEX_SONG_NAME = 3;
 
-	var WorldMap = __webpack_require__(4);
-	var osColorManager = __webpack_require__(2);
+	/**
+	 * Number of miliseconds after which request is made to the endpoint for new data.
+	 * @type {Number}
+	 */
+	var REQUEST_INTERVAL = 1500;
 
+	// jQuery Objects
+	var $topSongContainer = $('.top_song_container');
+
+	var osColorManager = __webpack_require__(3);
+
+	var WorldMap = __webpack_require__(2);
 	WorldMap.init();
 	var projection = WorldMap.getProjection();
 
@@ -86,41 +96,7 @@
 	var height = _WorldMap$getDimensions2[1];
 	setInterval(function () {
 		getDatPointPromise(dataUrl);
-	}, 2000);
-
-	/**
-	 * Given the lattitude and logitude returns an array holding lattitude and logitude values converted to cartesian
-	 * coordinates for placing them on the map.
-	 * @param  {number} longitude Longitude e.g. (15.34)
-	 * @param  {number} lattitude Lattitude e.g. (33)
-	 * @return {array}           Array with two elements each corresponding to Cartesian values of longitude and lattitude
-	 */
-	function getCartesianCoords(longitude, lattitude) {
-		return projection([longitude, lattitude]);
-	}
-
-	// Data points rendered using svg images
-	var labelText = "label";
-	var labelIndex = 0;
-
-	function addDataPointsCircles(data) {
-		var newLayerName = labelText + labelIndex;
-		$(document.body).prepend("<svg class = 'labels' id = '" + newLayerName + "' width = '" + width + "px' height ='" + height + "px' ></svg>");
-		d3.select('#' + newLayerName).selectAll('circle').data(data).enter().append('circle').classed('location', true).attr('r', 0.8).style('opacity', 0).each(function (d) {
-			// Using destructuring arguments right over here
-
-			var _getCartesianCoords = getCartesianCoords(d[INDEX_LONGITUDE], d[INDEX_LATTITUDE]);
-
-			var _getCartesianCoords2 = _slicedToArray(_getCartesianCoords, 2);
-
-			var x = _getCartesianCoords2[0];
-			var y = _getCartesianCoords2[1];
-
-			d3.select(this).attr('cx', x).attr('cy', y).style('fill', osColorManager.getOSColor(d[INDEX_APP_REQUEST_ID]));
-		}).transition().duration(1000).delay(100).style('opacity', 0.6);
-
-		labelIndex++;
-	}
+	}, REQUEST_INTERVAL);
 
 	/**
 	 * Url that is pinged after every few seconds to get the new set of data.
@@ -137,7 +113,117 @@
 	function getDatPointPromise(dataPointsUrl) {
 		$.getJSON(dataPointsUrl).then(function (response) {
 			addDataPointsCircles(response);
+			showMostSearchedSong(response);
 		});
+	}
+
+	/**
+	 * Finds the most searched song for a particular interval and shows it in the viewport inside a div
+	 * @param  {array} data Data containing all the required information for a particular interval 
+	 * @method showMostSearchedSong
+	 */
+	function showMostSearchedSong(data) {
+		var _getRandomLocation = getRandomLocation(data);
+
+		var _getRandomLocation2 = _slicedToArray(_getRandomLocation, 2);
+
+		var randomX = _getRandomLocation2[0];
+		var randomY = _getRandomLocation2[1];
+
+		$topSongContainer.css({ 'top': randomY, 'left': randomX });
+		$topSongContainer.html(findMostSearchedSong(data).toUpperCase());
+	}
+
+	function getRandomLocation(data) {
+		var randomData = data[Math.floor(data.length * Math.random())];
+		return getCartesianCoords(randomData[INDEX_LONGITUDE], randomData[INDEX_LATTITUDE]);
+	}
+
+	/**
+	 * Given the lattitude and logitude returns an array holding lattitude and logitude values converted to cartesian
+	 * coordinates for placing them on the map.
+	 * @param  {number} longitude Longitude e.g. (15.34)
+	 * @param  {number} lattitude Lattitude e.g. (33)
+	 * @return {array}           Array with two elements each corresponding to Cartesian values of longitude and lattitude
+	 */
+	function getCartesianCoords(longitude, lattitude) {
+		return projection([longitude, lattitude]);
+	}
+
+	/**
+	 * Returns the name of the song that has been searched most number of times given the data for a particular interval
+	 * @param  {array} data Data containing all the required information for an interval
+	 * @method  findMostSearchedSong
+	 * @return {string} Name of the most searched song
+	 */
+	function findMostSearchedSong(data) {
+
+		var mostSearchedSong = "";
+		var mostSearchedSongCount = 0;
+
+		var songSearchCount = {};
+		// Loop through the data and find the name of the songSearchCountand then increment their count
+		var _iteratorNormalCompletion = true;
+		var _didIteratorError = false;
+		var _iteratorError = undefined;
+
+		try {
+			for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var currentData = _step.value;
+
+				var songName = currentData[INDEX_SONG_NAME];
+				if (songSearchCount.hasOwnProperty(songName)) {
+					songSearchCount[songName]++;
+				} else {
+					songSearchCount[songName] = 1;
+				}
+
+				if (songSearchCount[songName] >= mostSearchedSongCount) {
+					mostSearchedSong = songName;
+					mostSearchedSongCount = songSearchCount[songName];
+				}
+			}
+		} catch (err) {
+			_didIteratorError = true;
+			_iteratorError = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion && _iterator['return']) {
+					_iterator['return']();
+				}
+			} finally {
+				if (_didIteratorError) {
+					throw _iteratorError;
+				}
+			}
+		}
+
+		return mostSearchedSong;
+	}
+
+	// Data points rendered using svg images
+	var labelText = "label";
+	var labelIndex = 0;
+
+	function addDataPointsCircles(data) {
+		var newLayerName = labelText + labelIndex;
+		// fucking webpack won't support templated strings mother fuck
+		// let appendix = `<svg class = 'labels' id = '${newLayerName}' width = '${width}px' height = '${height}px' ></svg>`;
+		$(document.body).prepend("<svg class = 'labels' id = '" + newLayerName + "' width = '" + width + "px' height ='" + height + "px' ></svg>");
+		d3.select('#' + newLayerName).selectAll('circle').data(data).enter().append('circle').classed('location', true).attr('r', 0.3).style('opacity', 0).each(function (d) {
+			// Using destructuring arguments right over here
+
+			var _getCartesianCoords = getCartesianCoords(d[INDEX_LONGITUDE], d[INDEX_LATTITUDE]);
+
+			var _getCartesianCoords2 = _slicedToArray(_getCartesianCoords, 2);
+
+			var x = _getCartesianCoords2[0];
+			var y = _getCartesianCoords2[1];
+
+			d3.select(this).attr('cx', x).attr('cy', y).style('fill', osColorManager.getOSColor(d[INDEX_APP_REQUEST_ID]));
+		}).transition().duration(1000).delay(300).attr('r', 1).style('opacity', 0.6);
+
+		labelIndex++;
 	}
 
 /***/ },
@@ -148,11 +234,69 @@
 
 /***/ },
 /* 2 */
+/***/ function(module, exports) {
+
+	/**
+	 * Module that handles, rendering, positioning and everything on the world map. 
+	 * @namespace WorldMap
+	 */
+	'use strict';
+
+	var WorldMap = {
+		/**
+	  * Initializes and places the world map in the viewport
+	  * @memberof WorldMap
+	  * @method
+	  */
+		init: function init() {
+			this.width = window.innerWidth;
+			this.height = window.innerHeight;
+
+			this.labels = d3.select('#labels').attr('width', this.width).attr('height', this.height);
+
+			var svg = d3.select('#world').attr('width', this.width).attr('height', this.height);
+
+			this.projection = d3.geo.equirectangular().scale(this.width / 5.7).translate([this.width / 2, this.height / 2]).precision(.1);
+
+			var path = d3.geo.path().projection(this.projection);
+
+			d3.json("./vendors/world.json", function (error, world) {
+				if (error) throw error;
+
+				svg.insert("path", ".graticule").datum(topojson.feature(world, world.objects.land)).attr("class", "land").attr("d", path);
+			});
+
+			d3.select(self.frameElement).style("height", this.height + "px");
+		},
+
+		/**
+	  * Returns d3 projection, that can be used in other modules for caluclation related to positioning.
+	  * @memberof WorldMap
+	  * @method  getProjection
+	  */
+		getProjection: function getProjection() {
+			return this.projection;
+		},
+
+		/**
+	  * Returns an array holding width and height of the WorldMap
+	  * @memberof WorldMap
+	  * @method  getDimensions
+	  */
+		getDimensions: function getDimensions() {
+			return [this.width, this.height];
+		}
+	};
+
+	module.exports = WorldMap;
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var sampleData = __webpack_require__(3);
+	var sampleData = __webpack_require__(4);
 
 	/**
 	 * A module to export functionality of retreiving various informations from a given requestId
@@ -263,7 +407,7 @@
 	module.exports = colorManager;
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -42406,64 +42550,6 @@
 	        "description": "Not categorized"
 	    }
 	}
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	/**
-	 * Module that handles, rendering, positioning and everything on the world map. 
-	 * @namespace WorldMap
-	 */
-	'use strict';
-
-	var WorldMap = {
-		/**
-	  * Initializes and places the world map in the viewport
-	  * @memberof WorldMap
-	  * @method
-	  */
-		init: function init() {
-			this.width = window.innerWidth;
-			this.height = window.innerHeight;
-
-			this.labels = d3.select('#labels').attr('width', this.width).attr('height', this.height);
-
-			var svg = d3.select('#world').attr('width', this.width).attr('height', this.height);
-
-			this.projection = d3.geo.equirectangular().scale(this.width / 5.7).translate([this.width / 2, this.height / 2]).precision(.1);
-
-			var path = d3.geo.path().projection(this.projection);
-
-			d3.json("./vendors/world.json", function (error, world) {
-				if (error) throw error;
-
-				svg.insert("path", ".graticule").datum(topojson.feature(world, world.objects.land)).attr("class", "land").attr("d", path);
-			});
-
-			d3.select(self.frameElement).style("height", this.height + "px");
-		},
-
-		/**
-	  * Returns d3 projection, that can be used in other modules for caluclation related to positioning.
-	  * @memberof WorldMap
-	  * @method  getProjection
-	  */
-		getProjection: function getProjection() {
-			return this.projection;
-		},
-
-		/**
-	  * Returns an array holding width and height of the WorldMap
-	  * @memberof WorldMap
-	  * @method  getDimensions
-	  */
-		getDimensions: function getDimensions() {
-			return [this.width, this.height];
-		}
-	};
-
-	module.exports = WorldMap;
 
 /***/ }
 /******/ ]);
