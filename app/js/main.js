@@ -146,52 +146,29 @@ function toHide(OSName) {
 	return OSsToHide.indexOf(OSName) > -1 ;
 }
 
-function showOs(OSName) {
-	console.log("Now the android shit should be visible the poor people of the world");
-	$('.' + OSName).each(function(osDot) {
-		$(this).css('visibility', 'visible');
-	});
+function getOsClass(osName) {
+	return '.os_' + osName;
 }
-
 
 /**
  * Given the data for an interval from the endpoint, adds data points on the map corresponding to the data
  * @method addDataPointsCircles
  * @param {array} data Data retreived from the endpoint for an interval
  */
-var addDataPointsCircles = function() {
-	let labelText = "label";
-	let labelIndex = 0;
+var addDataPointsCircles = function(data) {
+	// let us simply loop through the raw data just like that 
+	for(let currentData of data) {
+		let osClassName = getOsClass(osColorManager.getOSName(currentData[INDEX_APP_REQUEST_ID]));
+		let [x, y] = getCartesianCoords(currentData[INDEX_LONGITUDE], currentData[INDEX_LATTITUDE]);
 
-	var innerFunction = function(data) {
-		let newLayerName = labelText + labelIndex;
-		$(document.body).prepend(
-			"<svg class = 'labels' id = '" + newLayerName + "' width = '" + width +"px' height ='" + height + "px' ></svg>"
-		);
-		d3.select('#' + newLayerName).selectAll('circle')
-			.data(data)
-			.enter()
+		d3.select(osClassName)
 			.append('circle')
 			.attr('r', 0.3)
 			.style('opacity', 0)
-			.each(function(d) {
-				// Using destructuring arguments right over here 
-				let [x, y] = getCartesianCoords(d[INDEX_LONGITUDE], d[INDEX_LATTITUDE]);
-				d3.select(this)
-					.attr('cx', x)
-					.attr('cy', y)
-					.style('fill', osColorManager.getOSColor(d[INDEX_APP_REQUEST_ID]))
-					.classed(osColorManager.getOSName(d[INDEX_APP_REQUEST_ID]), true) 
-					.classed('hidden', function(d) {
-						return toHide(osColorManager.getOSName(d[INDEX_APP_REQUEST_ID]));
-					});
-			})
-			.transition().duration(1000).delay(300)
+			.attr('cx', x).attr('cy', y)
+			.style('fill', osColorManager.getOSColor(currentData[INDEX_APP_REQUEST_ID]))
+			.transition().duration(1000).delay(500)
 			.attr('r', 1)
 			.style('opacity', 0.6);
-
-		labelIndex++;
-	};
-
-	return innerFunction;
-}();
+	}
+};

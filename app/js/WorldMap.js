@@ -12,7 +12,12 @@ let WorldMap = {
 		this.width = window.innerWidth;
 		this.height = window.innerHeight;
 
+
 		this.labels = d3.select('#labels')
+			.attr('width', this.width)
+			.attr('height', this.height);
+
+		this.dotsContainer = d3.select('#os_container')
 			.attr('width', this.width)
 			.attr('height', this.height);
 
