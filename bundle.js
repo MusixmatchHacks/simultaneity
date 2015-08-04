@@ -44,6 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// Bebel automatically wraps the file around a self invoking anonymous function so no need to worry on that front
 	// Require the styles
 	'use strict';
 
@@ -82,6 +83,11 @@
 	var $topSongContainer = $('.top_song_container');
 
 	var osColorManager = __webpack_require__(2);
+	/**
+	 * Url that is pinged after every few seconds to get the new set of data.
+	 * @type {String}
+	 */
+	var dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views";
 
 	var WorldMap = __webpack_require__(4);
 	WorldMap.init();
@@ -89,21 +95,21 @@
 
 	var _WorldMap$getDimensions = WorldMap.getDimensions();
 
-	// Calls the API for data every two seconds and adds the data points to the map
+	/**
+	 * Stores names of operating systems and services that are not to be shown on the map
+	 * @type {Array}
+	 */
 
 	var _WorldMap$getDimensions2 = _slicedToArray(_WorldMap$getDimensions, 2);
 
 	var width = _WorldMap$getDimensions2[0];
 	var height = _WorldMap$getDimensions2[1];
+	var OSsToHide = [];
+
+	// Calls the API for data every two seconds and adds the data points to the map
 	setInterval(function () {
 		getDatPointPromise(dataUrl);
 	}, REQUEST_INTERVAL);
-
-	/**
-	 * Url that is pinged after every few seconds to get the new set of data.
-	 * @type {String}
-	 */
-	var dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views";
 
 	/**
 	 * Gets and adds data points to the world map from the passed in dataPointsUrl
@@ -121,7 +127,7 @@
 	/**
 	 * Finds the most searched song for a particular interval and shows it in the viewport inside a div
 	 * @param  {array} data Data containing all the required information for a particular interval 
-	 * @method showMostSearchedSong
+	j * @method showMostSearchedSong
 	 */
 	function showMostSearchedSong(data) {
 		var _getRandomLocation = getRandomLocation(data);
@@ -143,6 +149,12 @@
 		$topSongContainer.html(mostSearchedSong.toUpperCase() + "<br/> - " + mostSearchedSongArtist);
 	}
 
+	/**
+	 * Given data retreived from the ened point returns a random location from that data.
+	 * @method getRandomLocation
+	 * @param  {array} data  Raw Data captured from the endpoint
+	 * @return {array}      [x, y]
+	 */
 	function getRandomLocation(data) {
 		var randomData = data[Math.floor(data.length * Math.random())];
 		return getCartesianCoords(randomData[INDEX_LONGITUDE], randomData[INDEX_LATTITUDE]);
@@ -212,30 +224,55 @@
 		return [mostSearchedSong, mostSearchedSongArtist];
 	}
 
-	// Data points rendered using svg images
-	var labelText = "label";
-	var labelIndex = 0;
-
-	function addDataPointsCircles(data) {
-		var newLayerName = labelText + labelIndex;
-		// fucking webpack won't support templated strings mother fuck
-		// let appendix = `<svg class = 'labels' id = '${newLayerName}' width = '${width}px' height = '${height}px' ></svg>`;
-		$(document.body).prepend("<svg class = 'labels' id = '" + newLayerName + "' width = '" + width + "px' height ='" + height + "px' ></svg>");
-		d3.select('#' + newLayerName).selectAll('circle').data(data).enter().append('circle').classed('location', true).attr('r', 0.3).style('opacity', 0).each(function (d) {
-			// Using destructuring arguments right over here
-
-			var _getCartesianCoords = getCartesianCoords(d[INDEX_LONGITUDE], d[INDEX_LATTITUDE]);
-
-			var _getCartesianCoords2 = _slicedToArray(_getCartesianCoords, 2);
-
-			var x = _getCartesianCoords2[0];
-			var y = _getCartesianCoords2[1];
-
-			d3.select(this).attr('cx', x).attr('cy', y).style('fill', osColorManager.getOSColor(d[INDEX_APP_REQUEST_ID]));
-		}).transition().duration(1000).delay(300).attr('r', 1).style('opacity', 0.6);
-
-		labelIndex++;
+	/**
+	 * Given name of the operating system/service checks if it is supposed to be hidden on the map or not 
+	 * @method toHide
+	 * @param  {string} OSName Name of the operating system/service
+	 * @return {boolean}        True if the OS / Service is supposed to be hidden false otherwise
+	 */
+	function toHide(OSName) {
+		return OSsToHide.indexOf(OSName) > -1;
 	}
+
+	function showOs(OSName) {
+		console.log("Now the android shit should be visible the poor people of the world");
+		$('.' + OSName).each(function (osDot) {
+			$(this).css('visibility', 'visible');
+		});
+	}
+
+	/**
+	 * Given the data for an interval from the endpoint, adds data points on the map corresponding to the data
+	 * @method addDataPointsCircles
+	 * @param {array} data Data retreived from the endpoint for an interval
+	 */
+	var addDataPointsCircles = (function () {
+		var labelText = "label";
+		var labelIndex = 0;
+
+		var innerFunction = function innerFunction(data) {
+			var newLayerName = labelText + labelIndex;
+			$(document.body).prepend("<svg class = 'labels' id = '" + newLayerName + "' width = '" + width + "px' height ='" + height + "px' ></svg>");
+			d3.select('#' + newLayerName).selectAll('circle').data(data).enter().append('circle').attr('r', 0.3).style('opacity', 0).each(function (d) {
+				// Using destructuring arguments right over here
+
+				var _getCartesianCoords = getCartesianCoords(d[INDEX_LONGITUDE], d[INDEX_LATTITUDE]);
+
+				var _getCartesianCoords2 = _slicedToArray(_getCartesianCoords, 2);
+
+				var x = _getCartesianCoords2[0];
+				var y = _getCartesianCoords2[1];
+
+				d3.select(this).attr('cx', x).attr('cy', y).style('fill', osColorManager.getOSColor(d[INDEX_APP_REQUEST_ID])).classed(osColorManager.getOSName(d[INDEX_APP_REQUEST_ID]), true).classed('hidden', function (d) {
+					return toHide(osColorManager.getOSName(d[INDEX_APP_REQUEST_ID]));
+				});
+			}).transition().duration(1000).delay(300).attr('r', 1).style('opacity', 0.6);
+
+			labelIndex++;
+		};
+
+		return innerFunction;
+	})();
 
 /***/ },
 /* 1 */
