@@ -11,6 +11,16 @@ body {
   top: 0;
   left: 0; }
 
+.os {
+  position: absolute;
+  top: 0;
+  left: 0; }
+
+#os_container {
+  position: absolute;
+  top: 0;
+  left: 0; }
+
 .hidden {
   visibility: hidden; }
 

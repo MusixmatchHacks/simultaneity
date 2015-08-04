@@ -2,13 +2,25 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+	<!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'> -->
 	<link rel="stylesheet" href="style.css">
 	<title>World Map</title>
 </head>
 <body>
 	
 	<div class = "top_song_container">Waiting...</div>
+
+	<!-- SVG containers holding dots for respective Operating systems -->
+	<svg id = "os_container">
+		<svg class = "os_android" width = "1440px" height = "801px"></svg>
+		<svg class = "os_windows" width = "1440px" height = "801px"></svg>
+		<svg class = "os_mac" width = "1440px" height = "801px"></svg>
+		<svg class = "os_ios" width = "1440px" height = "801px"></svg>
+		<svg class = "os_azlyrics" width = "1440px" height = "801px"></svg>
+		<svg class = "os_other" width = "1440px" height = "801px"></svg>
+	</svg>
+
+	<!-- SVG container holding the World Map -->
 	<svg id = "world" fill = "#000000"></svg>
 	
 	<script src = "./vendors/d3.min.js"></script>
