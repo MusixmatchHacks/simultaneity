@@ -35,3 +35,11 @@ body {
   font-weight: bolder;
   color: white;
   text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.7); }
+
+.toggle_button, .toggle_button__windows, .toggle_button__website, .toggle_button__android, .toggle_button__ios, .toggle_button__azlyrics, .toggle_button__spotify, .toggle_button__mobile, .toggle_button__other {
+  width: 30px;
+  height: 30px;
+  background-color: green; }
+
+.toggle_button__windows {
+  background-color: #0670C4; }

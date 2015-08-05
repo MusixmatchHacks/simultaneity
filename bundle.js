@@ -86,7 +86,7 @@
 	var $osDotsContainer = $('#os_container');
 
 	var osColorManager = __webpack_require__(2);
-	var osNameMaps = __webpack_require__(6);
+
 	/**
 	 * Url that is pinged after every few seconds to get the new set of data.
 	 * @type {String}
@@ -267,7 +267,7 @@
 				var currentData = _step2.value;
 
 				var osName = osColorManager.getOSName(currentData[INDEX_APP_REQUEST_ID]);
-				var osClassName = getOsClass(osNameMaps[osName]);
+				var osClassName = getOsClass(osName);
 
 				var _getCartesianCoords = getCartesianCoords(currentData[INDEX_LONGITUDE], currentData[INDEX_LATTITUDE]);
 
@@ -304,9 +304,10 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var sampleData = __webpack_require__(3);
+	var osNameMaps = __webpack_require__(6);
 
 	/**
 	 * A module to export functionality of retreiving various informations from a given requestId
@@ -342,8 +343,8 @@
 				_iteratorError = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion && _iterator["return"]) {
-						_iterator["return"]();
+					if (!_iteratorNormalCompletion && _iterator['return']) {
+						_iterator['return']();
 					}
 				} finally {
 					if (_didIteratorError) {
@@ -365,7 +366,7 @@
 		getOSName: function getOSName(requestId) {
 			var requestObject = sampleData[requestId];
 			if (requestObject !== undefined) {
-				return requestObject["name"];
+				return osNameMaps[requestObject["name"]];
 			} else {
 				return '';
 			}
@@ -377,12 +378,14 @@
 	  * @enum
 	  */
 		osColors: {
-			'color_android': '#A4C639',
 			'color_windows': '#0670C4',
-			'color_mac': '#CCCCCC',
+			'color_website': '#ED462F',
+			'color_android': '#A4C639',
 			'color_ios': '#55ACEE',
 			'color_azlyrics': '#CCCCDD',
-			'color_default': '#D8D8D8'
+			'color_spotify': '#65CC60',
+			'color_mobile': '#03509D',
+			'color_other': '#D8D8D8'
 		},
 
 		/**
@@ -394,25 +397,32 @@
 		getOSColor: function getOSColor(requestId) {
 			var osName = this.getOSName(requestId);
 			switch (osName) {
+				case 'windows':
+					return this.osColors.color_windows;
+					break;
+				case 'website':
+					return this.osColors.color_website;
+					break;
 				case 'android':
 					return this.osColors.color_android;
 					break;
-				case 'win7':
-				case 'win8':
-				case 'win_desktop':
-					return this.osColors.color_windows;
-					break;
-				case 'mac_desktop':
-					return this.osColors.color_mac;
-					break;
-				case 'azlyrics':
-					return this.osColors.color_azlyrics;
-					break;
-				case 'ios_clip':
+				case 'ios':
 					return this.osColors.color_ios;
 					break;
+				case 'azlylrics':
+					return this.osColors.color_azlyrics;
+					break;
+				case 'spotify':
+					return this.osColors.color_spotify;
+					break;
+				case 'mobile':
+					return this.osColors.color_mobile;
+					break;
+				case 'other':
+					return this.osColors.color_other;
+					break;
 				default:
-					return this.osColors.color_default;
+					return this.osColors.color_other;
 					break;
 			}
 		}
