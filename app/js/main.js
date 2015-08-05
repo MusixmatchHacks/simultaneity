@@ -29,28 +29,25 @@ const INDEX_ARTIST_NAME = 4;
  */
 const REQUEST_INTERVAL = 1500;
 
+const NOT_VISIBLE = 0;
+
 // jQuery Objects 
 let $topSongContainer = $('.top_song_container');
 let $osDotsContainer = $('#os_container');
 
 let osColorManager = require('./osColorManager');
-let serviceNameMaps = require('./serviceNameMaps');
+let osNameMaps = require('./osNameMaps');
 /**
  * Url that is pinged after every few seconds to get the new set of data.
  * @type {String}
  */
 let dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views";
 
-console.log(serviceNameMaps[""]);
-
 let WorldMap = require('./WorldMap.js');
 WorldMap.init();
 let projection = WorldMap.getProjection();
 let [width, height] = WorldMap.getDimensions();
 
-// Filter out all the unique OS names and then, create a svg container for each of them 
-let uniqueOSs = osColorManager.getUniqueOSNames();
-console.log(uniqueOSs);
 
 // Calls the API for data every two seconds and adds the data points to the map 
 setInterval(()=>{
@@ -152,6 +149,21 @@ function getOsClass(osName) {
 }
 
 /**
+ * Given the name of the service/os e.g android/windows/other toggles the visibility of related dots on the map
+ * @param  {string} osName Name of the OS/Service whose dot visibility is to be toggled
+ * @method  toggleOSVisibility
+ */
+function toggleOSVisibility(osName) {
+	let $osContainer = $(getOsClass(osName));
+	let currentVisibility = $osContainer.attr('opacity');
+	if(currentVisibility === NOT_VISIBLE) {
+		$osContainer.attr('opactiy', 1);
+	} else {
+		$osContainer.attr('opacity', 0);
+	}
+}
+
+/**
  * Given the data for an interval from the endpoint, adds data points on the map corresponding to the data
  * @method addDataPointsCircles
  * @param {array} data Data retreived from the endpoint for an interval
@@ -159,7 +171,9 @@ function getOsClass(osName) {
 var addDataPointsCircles = function(data) {
 	// let us simply loop through the raw data just like that 
 	for(let currentData of data) {
-		let osClassName = getOsClass(osColorManager.getOSName(currentData[INDEX_APP_REQUEST_ID]));
+		let osName = osColorManager.getOSName(currentData[INDEX_APP_REQUEST_ID]);
+		let osClassName = getOsClass(osNameMaps[osName]);
+
 		let [x, y] = getCartesianCoords(currentData[INDEX_LONGITUDE], currentData[INDEX_LATTITUDE]);
 
 		d3.select(osClassName)

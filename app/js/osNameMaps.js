@@ -1,7 +1,7 @@
 /**
  * Stores names of the main services
  * @type {Object}
- * @memberof serviceNameMaps
+ * @memberof osNameMaps
  */
 let main_service_names = {
 	"service_windows" : "windows",
@@ -16,7 +16,7 @@ let main_service_names = {
 /**
  * Maps ambiguous and redundant names to a more understandable serivce name.
  * @type {Object}
- * @namespace serviceNameMaps
+ * @namespace osNameMaps
  */
 module.exports = {
 	"win7" : main_service_names.service_window, "other" : main_service_names.service_other,

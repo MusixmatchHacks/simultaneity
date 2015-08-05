@@ -79,38 +79,34 @@
 	 */
 	var REQUEST_INTERVAL = 1500;
 
+	var NOT_VISIBLE = 0;
+
 	// jQuery Objects
 	var $topSongContainer = $('.top_song_container');
 	var $osDotsContainer = $('#os_container');
 
 	var osColorManager = __webpack_require__(2);
-	var serviceNameMaps = __webpack_require__(5);
+	var osNameMaps = __webpack_require__(6);
 	/**
 	 * Url that is pinged after every few seconds to get the new set of data.
 	 * @type {String}
 	 */
 	var dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views";
 
-	console.log(serviceNameMaps[""]);
-
-	var WorldMap = __webpack_require__(4);
+	var WorldMap = __webpack_require__(5);
 	WorldMap.init();
 	var projection = WorldMap.getProjection();
 
 	var _WorldMap$getDimensions = WorldMap.getDimensions();
 
-	// Filter out all the unique OS names and then, create a svg container for each of them
+	// Calls the API for data every two seconds and adds the data points to the map
 
 	var _WorldMap$getDimensions2 = _slicedToArray(_WorldMap$getDimensions, 2);
 
 	var width = _WorldMap$getDimensions2[0];
 	var height = _WorldMap$getDimensions2[1];
-	var uniqueOSs = osColorManager.getUniqueOSNames();
-	console.log(uniqueOSs);
-
-	// Calls the API for data every two seconds and adds the data points to the map
 	setInterval(function () {
-	  getDatPointPromise(dataUrl);
+		getDatPointPromise(dataUrl);
 	}, REQUEST_INTERVAL);
 
 	/**
@@ -120,10 +116,10 @@
 	 * @return {nothing}
 	 */
 	function getDatPointPromise(dataPointsUrl) {
-	  $.getJSON(dataPointsUrl).then(function (response) {
-	    addDataPointsCircles(response);
-	    showMostSearchedSong(response);
-	  });
+		$.getJSON(dataPointsUrl).then(function (response) {
+			addDataPointsCircles(response);
+			showMostSearchedSong(response);
+		});
 	}
 
 	/**
@@ -132,23 +128,23 @@
 	j * @method showMostSearchedSong
 	 */
 	function showMostSearchedSong(data) {
-	  var _getRandomLocation = getRandomLocation(data);
+		var _getRandomLocation = getRandomLocation(data);
 
-	  var _getRandomLocation2 = _slicedToArray(_getRandomLocation, 2);
+		var _getRandomLocation2 = _slicedToArray(_getRandomLocation, 2);
 
-	  var randomX = _getRandomLocation2[0];
-	  var randomY = _getRandomLocation2[1];
+		var randomX = _getRandomLocation2[0];
+		var randomY = _getRandomLocation2[1];
 
-	  $topSongContainer.css({ 'top': randomY, 'left': randomX });
+		$topSongContainer.css({ 'top': randomY, 'left': randomX });
 
-	  var _findMostSearchedSong = findMostSearchedSong(data);
+		var _findMostSearchedSong = findMostSearchedSong(data);
 
-	  var _findMostSearchedSong2 = _slicedToArray(_findMostSearchedSong, 2);
+		var _findMostSearchedSong2 = _slicedToArray(_findMostSearchedSong, 2);
 
-	  var mostSearchedSong = _findMostSearchedSong2[0];
-	  var mostSearchedSongArtist = _findMostSearchedSong2[1];
+		var mostSearchedSong = _findMostSearchedSong2[0];
+		var mostSearchedSongArtist = _findMostSearchedSong2[1];
 
-	  $topSongContainer.html(mostSearchedSong.toUpperCase() + "<br/> - " + mostSearchedSongArtist);
+		$topSongContainer.html(mostSearchedSong.toUpperCase() + "<br/> - " + mostSearchedSongArtist);
 	}
 
 	/**
@@ -158,8 +154,8 @@
 	 * @return {array}      [x, y]
 	 */
 	function getRandomLocation(data) {
-	  var randomData = data[Math.floor(data.length * Math.random())];
-	  return getCartesianCoords(randomData[INDEX_LONGITUDE], randomData[INDEX_LATTITUDE]);
+		var randomData = data[Math.floor(data.length * Math.random())];
+		return getCartesianCoords(randomData[INDEX_LONGITUDE], randomData[INDEX_LATTITUDE]);
 	}
 
 	/**
@@ -170,7 +166,7 @@
 	 * @return {array}           Array with two elements each corresponding to Cartesian values of longitude and lattitude
 	 */
 	function getCartesianCoords(longitude, lattitude) {
-	  return projection([longitude, lattitude]);
+		return projection([longitude, lattitude]);
 	}
 
 	/**
@@ -181,49 +177,49 @@
 	 */
 	function findMostSearchedSong(data) {
 
-	  var mostSearchedSong = "";
-	  var mostSearchedSongArtist = "";
-	  var mostSearchedSongCount = 0;
+		var mostSearchedSong = "";
+		var mostSearchedSongArtist = "";
+		var mostSearchedSongCount = 0;
 
-	  var songSearchCount = {};
-	  // Loop through the data and find the name of the songSearchCountand then increment their count
-	  var _iteratorNormalCompletion = true;
-	  var _didIteratorError = false;
-	  var _iteratorError = undefined;
+		var songSearchCount = {};
+		// Loop through the data and find the name of the songSearchCountand then increment their count
+		var _iteratorNormalCompletion = true;
+		var _didIteratorError = false;
+		var _iteratorError = undefined;
 
-	  try {
-	    for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	      var currentData = _step.value;
+		try {
+			for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var currentData = _step.value;
 
-	      var songName = currentData[INDEX_SONG_NAME];
-	      if (songSearchCount.hasOwnProperty(songName)) {
-	        songSearchCount[songName]++;
-	      } else {
-	        songSearchCount[songName] = 1;
-	      }
+				var songName = currentData[INDEX_SONG_NAME];
+				if (songSearchCount.hasOwnProperty(songName)) {
+					songSearchCount[songName]++;
+				} else {
+					songSearchCount[songName] = 1;
+				}
 
-	      if (songSearchCount[songName] >= mostSearchedSongCount) {
-	        mostSearchedSong = songName;
-	        mostSearchedSongCount = songSearchCount[songName];
-	        mostSearchedSongArtist = currentData[INDEX_ARTIST_NAME];
-	      }
-	    }
-	  } catch (err) {
-	    _didIteratorError = true;
-	    _iteratorError = err;
-	  } finally {
-	    try {
-	      if (!_iteratorNormalCompletion && _iterator['return']) {
-	        _iterator['return']();
-	      }
-	    } finally {
-	      if (_didIteratorError) {
-	        throw _iteratorError;
-	      }
-	    }
-	  }
+				if (songSearchCount[songName] >= mostSearchedSongCount) {
+					mostSearchedSong = songName;
+					mostSearchedSongCount = songSearchCount[songName];
+					mostSearchedSongArtist = currentData[INDEX_ARTIST_NAME];
+				}
+			}
+		} catch (err) {
+			_didIteratorError = true;
+			_iteratorError = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion && _iterator['return']) {
+					_iterator['return']();
+				}
+			} finally {
+				if (_didIteratorError) {
+					throw _iteratorError;
+				}
+			}
+		}
 
-	  return [mostSearchedSong, mostSearchedSongArtist];
+		return [mostSearchedSong, mostSearchedSongArtist];
 	}
 
 	/**
@@ -233,11 +229,26 @@
 	 * @return {boolean}        True if the OS / Service is supposed to be hidden false otherwise
 	 */
 	function toHide(OSName) {
-	  return OSsToHide.indexOf(OSName) > -1;
+		return OSsToHide.indexOf(OSName) > -1;
 	}
 
 	function getOsClass(osName) {
-	  return '.os_' + osName;
+		return '.os_' + osName;
+	}
+
+	/**
+	 * Given the name of the service/os e.g android/windows/other toggles the visibility of related dots on the map
+	 * @param  {string} osName Name of the OS/Service whose dot visibility is to be toggled
+	 * @method  toggleOSVisibility
+	 */
+	function toggleOSVisibility(osName) {
+		var $osContainer = $(getOsClass(osName));
+		var currentVisibility = $osContainer.attr('opacity');
+		if (currentVisibility === NOT_VISIBLE) {
+			$osContainer.attr('opactiy', 1);
+		} else {
+			$osContainer.attr('opacity', 0);
+		}
 	}
 
 	/**
@@ -246,40 +257,41 @@
 	 * @param {array} data Data retreived from the endpoint for an interval
 	 */
 	var addDataPointsCircles = function addDataPointsCircles(data) {
-	  // let us simply loop through the raw data just like that
-	  var _iteratorNormalCompletion2 = true;
-	  var _didIteratorError2 = false;
-	  var _iteratorError2 = undefined;
+		// let us simply loop through the raw data just like that
+		var _iteratorNormalCompletion2 = true;
+		var _didIteratorError2 = false;
+		var _iteratorError2 = undefined;
 
-	  try {
-	    for (var _iterator2 = data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	      var currentData = _step2.value;
+		try {
+			for (var _iterator2 = data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+				var currentData = _step2.value;
 
-	      var osClassName = getOsClass(osColorManager.getOSName(currentData[INDEX_APP_REQUEST_ID]));
+				var osName = osColorManager.getOSName(currentData[INDEX_APP_REQUEST_ID]);
+				var osClassName = getOsClass(osNameMaps[osName]);
 
-	      var _getCartesianCoords = getCartesianCoords(currentData[INDEX_LONGITUDE], currentData[INDEX_LATTITUDE]);
+				var _getCartesianCoords = getCartesianCoords(currentData[INDEX_LONGITUDE], currentData[INDEX_LATTITUDE]);
 
-	      var _getCartesianCoords2 = _slicedToArray(_getCartesianCoords, 2);
+				var _getCartesianCoords2 = _slicedToArray(_getCartesianCoords, 2);
 
-	      var x = _getCartesianCoords2[0];
-	      var y = _getCartesianCoords2[1];
+				var x = _getCartesianCoords2[0];
+				var y = _getCartesianCoords2[1];
 
-	      d3.select(osClassName).append('circle').attr('r', 0.3).style('opacity', 0).attr('cx', x).attr('cy', y).style('fill', osColorManager.getOSColor(currentData[INDEX_APP_REQUEST_ID])).transition().duration(1000).delay(500).attr('r', 1).style('opacity', 0.6);
-	    }
-	  } catch (err) {
-	    _didIteratorError2 = true;
-	    _iteratorError2 = err;
-	  } finally {
-	    try {
-	      if (!_iteratorNormalCompletion2 && _iterator2['return']) {
-	        _iterator2['return']();
-	      }
-	    } finally {
-	      if (_didIteratorError2) {
-	        throw _iteratorError2;
-	      }
-	    }
-	  }
+				d3.select(osClassName).append('circle').attr('r', 0.3).style('opacity', 0).attr('cx', x).attr('cy', y).style('fill', osColorManager.getOSColor(currentData[INDEX_APP_REQUEST_ID])).transition().duration(1000).delay(500).attr('r', 1).style('opacity', 0.6);
+			}
+		} catch (err) {
+			_didIteratorError2 = true;
+			_iteratorError2 = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+					_iterator2['return']();
+				}
+			} finally {
+				if (_didIteratorError2) {
+					throw _iteratorError2;
+				}
+			}
+		}
 	};
 
 /***/ },
@@ -42554,7 +42566,8 @@
 	}
 
 /***/ },
-/* 4 */
+/* 4 */,
+/* 5 */
 /***/ function(module, exports) {
 
 	/**
@@ -42614,13 +42627,13 @@
 	module.exports = WorldMap;
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	/**
 	 * Stores names of the main services
 	 * @type {Object}
-	 * @memberof serviceNameMaps
+	 * @memberof osNameMaps
 	 */
 	"use strict";
 
@@ -42637,7 +42650,7 @@
 	/**
 	 * Maps ambiguous and redundant names to a more understandable serivce name.
 	 * @type {Object}
-	 * @namespace serviceNameMaps
+	 * @namespace osNameMaps
 	 */
 	module.exports = {
 		"win7": main_service_names.service_window, "other": main_service_names.service_other,
