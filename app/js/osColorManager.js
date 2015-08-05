@@ -1,4 +1,5 @@
 let sampleData = require('./app_info.js');
+let osNameMaps = require('./osNameMaps');
 
 /**
  * A module to export functionality of retreiving various informations from a given requestId
@@ -35,7 +36,7 @@ let colorManager = {
 	getOSName(requestId) {
 		let requestObject = sampleData[requestId];
 		if(requestObject !== undefined) {
-			return requestObject["name"];
+			return osNameMaps[requestObject["name"]];
 		} else {
 			return '';
 		}
@@ -47,12 +48,14 @@ let colorManager = {
 	 * @enum
 	 */
 	osColors : {
-		'color_android' : '#A4C639',
 		'color_windows' : '#0670C4',
-		'color_mac' : '#CCCCCC',
+		'color_website' : '#ED462F',
+		'color_android' : '#A4C639',
 		'color_ios' : '#55ACEE',
 		'color_azlyrics' : '#CCCCDD',
-		'color_default' : '#D8D8D8'
+		'color_spotify' : '#65CC60',
+		'color_mobile' : '#03509D',
+		'color_other' : '#D8D8D8'
 	},
 
 	/**
@@ -64,25 +67,32 @@ let colorManager = {
 	getOSColor(requestId) {
 		let osName = this.getOSName(requestId);
 		switch(osName) {
-			case 'android' : 
-				return this.osColors.color_android;
-				break;
-			case 'win7' : 
-			case 'win8' :
-			case 'win_desktop' : 
+			case 'windows' :
 				return this.osColors.color_windows;
 				break;
-			case 'mac_desktop' :
-				return this.osColors.color_mac;
+			case 'website' :
+				return this.osColors.color_website;
 				break;
-			case 'azlyrics' :
-				return this.osColors.color_azlyrics;
+			case 'android' :
+				return this.osColors.color_android;
 				break;
-			case 'ios_clip' : 
+			case 'ios' :
 				return this.osColors.color_ios;
 				break;
+			case 'azlylrics' :
+				return this.osColors.color_azlyrics;
+				break;
+			case 'spotify' :
+				return this.osColors.color_spotify;
+				break;
+			case 'mobile' :
+				return this.osColors.color_mobile;
+				break;
+			case 'other' :
+				return this.osColors.color_other;
+				break;
 			default : 
-				return this.osColors.color_default;
+				return this.osColors.color_other;
 				break;
 		}
 	}

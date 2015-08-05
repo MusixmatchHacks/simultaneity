@@ -36,7 +36,7 @@ let $topSongContainer = $('.top_song_container');
 let $osDotsContainer = $('#os_container');
 
 let osColorManager = require('./osColorManager');
-let osNameMaps = require('./osNameMaps');
+
 /**
  * Url that is pinged after every few seconds to get the new set of data.
  * @type {String}
@@ -172,7 +172,7 @@ var addDataPointsCircles = function(data) {
 	// let us simply loop through the raw data just like that 
 	for(let currentData of data) {
 		let osName = osColorManager.getOSName(currentData[INDEX_APP_REQUEST_ID]);
-		let osClassName = getOsClass(osNameMaps[osName]);
+		let osClassName = getOsClass(osName);
 
 		let [x, y] = getCartesianCoords(currentData[INDEX_LONGITUDE], currentData[INDEX_LATTITUDE]);
 
