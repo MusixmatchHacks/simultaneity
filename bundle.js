@@ -79,7 +79,7 @@
 	 */
 	var REQUEST_INTERVAL = 1500;
 
-	var NOT_VISIBLE = 0;
+	var NOT_VISIBLE = '0';
 
 	// jQuery Objects
 	var $topSongContainer = $('.top_song_container');
@@ -108,6 +108,14 @@
 	setInterval(function () {
 		getDatPointPromise(dataUrl);
 	}, REQUEST_INTERVAL);
+
+	// let us add the click listeners to the toggle buttons
+	$('.toggle_buttons_container').children().each(function () {
+		$(this).on('click', function () {
+			var osToToggle = $(this).attr('data-os');
+			toggleOSVisibility(osToToggle);
+		});
+	});
 
 	/**
 	 * Gets and adds data points to the world map from the passed in dataPointsUrl
@@ -242,12 +250,13 @@
 	 * @method  toggleOSVisibility
 	 */
 	function toggleOSVisibility(osName) {
-		var $osContainer = $(getOsClass(osName));
-		var currentVisibility = $osContainer.attr('opacity');
+		var osContainer = d3.select(getOsClass(osName));
+		var currentVisibility = osContainer.style('opacity');
+
 		if (currentVisibility === NOT_VISIBLE) {
-			$osContainer.attr('opactiy', 1);
+			osContainer.style('opacity', 1);
 		} else {
-			$osContainer.attr('opacity', 0);
+			osContainer.style('opacity', 0);
 		}
 	}
 
