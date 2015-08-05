@@ -29,7 +29,7 @@ const INDEX_ARTIST_NAME = 4;
  */
 const REQUEST_INTERVAL = 1500;
 
-const NOT_VISIBLE = 0;
+const NOT_VISIBLE = '0';
 
 // jQuery Objects 
 let $topSongContainer = $('.top_song_container');
@@ -53,6 +53,15 @@ let [width, height] = WorldMap.getDimensions();
 setInterval(()=>{
 	getDatPointPromise(dataUrl);
 }, REQUEST_INTERVAL);
+
+
+// let us add the click listeners to the toggle buttons 
+$('.toggle_buttons_container').children().each(function() {
+	$(this).on('click', function() {
+		let osToToggle = $(this).attr('data-os');
+		toggleOSVisibility(osToToggle);
+	});
+});
 
 /**
  * Gets and adds data points to the world map from the passed in dataPointsUrl
@@ -154,12 +163,13 @@ function getOsClass(osName) {
  * @method  toggleOSVisibility
  */
 function toggleOSVisibility(osName) {
-	let $osContainer = $(getOsClass(osName));
-	let currentVisibility = $osContainer.attr('opacity');
-	if(currentVisibility === NOT_VISIBLE) {
-		$osContainer.attr('opactiy', 1);
+	let osContainer = d3.select(getOsClass(osName));
+	let currentVisibility = osContainer.style('opacity');
+
+	if(currentVisibility === NOT_VISIBLE) {  
+		osContainer.style('opacity', 1);
 	} else {
-		$osContainer.attr('opacity', 0);
+		osContainer.style('opacity', 0);
 	}
 }
 
