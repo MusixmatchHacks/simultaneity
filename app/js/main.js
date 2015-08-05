@@ -31,25 +31,26 @@ const REQUEST_INTERVAL = 1500;
 
 // jQuery Objects 
 let $topSongContainer = $('.top_song_container');
+let $osDotsContainer = $('#os_container');
 
 let osColorManager = require('./osColorManager');
+let serviceNameMaps = require('./serviceNameMaps');
 /**
  * Url that is pinged after every few seconds to get the new set of data.
  * @type {String}
  */
 let dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views";
 
+console.log(serviceNameMaps[""]);
 
 let WorldMap = require('./WorldMap.js');
 WorldMap.init();
 let projection = WorldMap.getProjection();
 let [width, height] = WorldMap.getDimensions();
 
-/**
- * Stores names of operating systems and services that are not to be shown on the map
- * @type {Array}
- */
-let OSsToHide = [];
+// Filter out all the unique OS names and then, create a svg container for each of them 
+let uniqueOSs = osColorManager.getUniqueOSNames();
+console.log(uniqueOSs);
 
 // Calls the API for data every two seconds and adds the data points to the map 
 setInterval(()=>{

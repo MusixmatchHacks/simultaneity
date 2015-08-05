@@ -10,8 +10,10 @@ let colorManager = {
 	* Logs the Unique os names present in the sample data 
 	* @memberof osColorManager
 	* @method getUniqueOSNames
+	* @return {array} Array containing names of all the unique available operating systems
 	*/
-	logUniqueOSNames() {
+	getUniqueOSNames() {
+		let osNames = [];
 		// Create a new set 
 		let osNameSet = new Set();
 		for(let requestId in sampleData) 
@@ -19,7 +21,8 @@ let colorManager = {
 
 		// Now let us print all the unique names 
 		for(let name of osNameSet) 
-			console.log(name);
+			osNames.push(name);
+		return osNames;
 	},
 
 	/**

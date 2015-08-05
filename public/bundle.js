@@ -81,13 +81,17 @@
 
 	// jQuery Objects
 	var $topSongContainer = $('.top_song_container');
+	var $osDotsContainer = $('#os_container');
 
 	var osColorManager = __webpack_require__(2);
+	var serviceNameMaps = __webpack_require__(5);
 	/**
 	 * Url that is pinged after every few seconds to get the new set of data.
 	 * @type {String}
 	 */
 	var dataUrl = "http://ec2-54-147-191-254.compute-1.amazonaws.com/view_relayer_dummy/get_views";
+
+	console.log(serviceNameMaps[""]);
 
 	var WorldMap = __webpack_require__(4);
 	WorldMap.init();
@@ -95,16 +99,14 @@
 
 	var _WorldMap$getDimensions = WorldMap.getDimensions();
 
-	/**
-	 * Stores names of operating systems and services that are not to be shown on the map
-	 * @type {Array}
-	 */
+	// Filter out all the unique OS names and then, create a svg container for each of them
 
 	var _WorldMap$getDimensions2 = _slicedToArray(_WorldMap$getDimensions, 2);
 
 	var width = _WorldMap$getDimensions2[0];
 	var height = _WorldMap$getDimensions2[1];
-	var OSsToHide = [];
+	var uniqueOSs = osColorManager.getUniqueOSNames();
+	console.log(uniqueOSs);
 
 	// Calls the API for data every two seconds and adds the data points to the map
 	setInterval(function () {
@@ -304,8 +306,10 @@
 	 * Logs the Unique os names present in the sample data 
 	 * @memberof osColorManager
 	 * @method getUniqueOSNames
+	 * @return {array} Array containing names of all the unique available operating systems
 	 */
-		logUniqueOSNames: function logUniqueOSNames() {
+		getUniqueOSNames: function getUniqueOSNames() {
+			var osNames = [];
 			// Create a new set
 			var osNameSet = new Set();
 			for (var requestId in sampleData) {
@@ -319,7 +323,7 @@
 				for (var _iterator = osNameSet[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 					var _name = _step.value;
 
-					console.log(_name);
+					osNames.push(_name);
 				}
 			} catch (err) {
 				_didIteratorError = true;
@@ -335,6 +339,8 @@
 					}
 				}
 			}
+
+			return osNames;
 		},
 
 		/**
@@ -42606,6 +42612,45 @@
 	};
 
 	module.exports = WorldMap;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	/**
+	 * Stores names of the main services
+	 * @type {Object}
+	 * @memberof serviceNameMaps
+	 */
+	"use strict";
+
+	var main_service_names = {
+		"service_windows": "windows",
+		"service_website": "website",
+		"service_android": "android",
+		"service_ios": "ios",
+		"service_azlyrics": "azlyrics",
+		"service_spotify": "spotify",
+		"service_mobile": "mobile",
+		"service_other": "other"
+	};
+	/**
+	 * Maps ambiguous and redundant names to a more understandable serivce name.
+	 * @type {Object}
+	 * @namespace serviceNameMaps
+	 */
+	module.exports = {
+		"win7": main_service_names.service_window, "other": main_service_names.service_other,
+		"website": main_service_names.website, "mobile": main_service_names.service_mobile,
+		"nokia": main_service_names.service_mobile, "iphone": main_service_names.service_ios,
+		"android": main_service_names.service_android, "songtexte": main_service_names.service_other,
+		"win_desktop": main_service_names.service_windows, "mac_desktop": main_service_names.service_other,
+		"spotify": main_service_names.service_spotify, "ipad": main_service_names.service_ios,
+		"win8": main_service_names.service_windows, "google_glass": main_service_names.service_other,
+		"ios_clip": main_service_names.service_ios, "mxm_website": main_service_names.service_website,
+		"name": main_service_names.service_other, "azlyrics": main_service_names.service_azlyrics,
+		"mxm_chrome_ext": main_service_names.serivce_other
+	};
 
 /***/ }
 /******/ ]);
