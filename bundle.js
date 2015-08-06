@@ -288,7 +288,7 @@
 				var x = _getCartesianCoords2[0];
 				var y = _getCartesianCoords2[1];
 
-				d3.select(osClassName).append('circle').attr('r', 0.3).style('opacity', 0).attr('cx', x).attr('cy', y).style('fill', osColorManager.getOSColor(currentData[INDEX_APP_REQUEST_ID])).transition().duration(1000).delay(500).attr('r', 1).style('opacity', 0.6);
+				d3.select(osClassName).append('circle').attr('cx', x).attr('cy', y).style('fill', osColorManager.getOSColor(currentData[INDEX_APP_REQUEST_ID])).attr('r', 1).style('opacity', 0.6);
 			}
 		} catch (err) {
 			_didIteratorError2 = true;
