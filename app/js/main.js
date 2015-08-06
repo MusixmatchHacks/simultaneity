@@ -48,6 +48,9 @@ WorldMap.init();
 let projection = WorldMap.getProjection();
 let [width, height] = WorldMap.getDimensions();
 
+d3.selectAll('.os')
+	.attr('width', width)
+	.attr('height' , height);
 
 // Calls the API for data every two seconds and adds the data points to the map 
 setInterval(()=>{
@@ -58,6 +61,7 @@ setInterval(()=>{
 // let us add the click listeners to the toggle buttons 
 $('.toggle_buttons_container').children().each(function() {
 	$(this).on('click', function() {
+		$(this).toggleClass('toggle_button--selected');
 		let osToToggle = $(this).attr('data-os');
 		toggleOSVisibility(osToToggle);
 	});
