@@ -192,11 +192,8 @@ var addDataPointsCircles = function(data) {
 
 		d3.select(osClassName)
 			.append('circle')
-			.attr('r', 0.3)
-			.style('opacity', 0)
 			.attr('cx', x).attr('cy', y)
 			.style('fill', osColorManager.getOSColor(currentData[INDEX_APP_REQUEST_ID]))
-			.transition().duration(1000).delay(500)
 			.attr('r', 1)
 			.style('opacity', 0.6);
 	}
