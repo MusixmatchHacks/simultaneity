@@ -25,7 +25,6 @@ body {
 	position : absolute;
 	top : 0;
 	left : 0;
-	z-index : 10000;
 }
 
 .hidden { 
@@ -48,7 +47,7 @@ body {
 	position : absolute;
 	top : 10px ;
 	left : 10px ;
-	z-index : 9999999;
+	z-index : 999;
 }
 
 .toggle_button {
@@ -64,6 +63,7 @@ body {
 	border-radius : 2px;
 	opacity : 0.35;
 	transition : all 0.2s;
+	user-select : none;
 }
 
 .toggle_button--selected {
@@ -73,17 +73,18 @@ body {
 
 .toggle_button__windows {
 	@extend .toggle_button;
-	background-color : #0670C4;
+	background-color : #f781bf;
 }
 
 .toggle_button__website {
 	@extend .toggle_button;
-	background-color : #ED462F;
+	background-color : #ffff99;
+	color : rgba(0 ,0 ,0, 0.6);
 }
 
 .toggle_button__android {
 	@extend .toggle_button;
-	background-color : #A4C639;
+	background-color : #ED462F;
 }
 
 .toggle_button__ios{
@@ -93,11 +94,12 @@ body {
 
 .toggle_button__azlyrics {
 	@extend .toggle_button;
-	background-color : #CCCCDD;
+	background-color : #d8d8d8;
+	color : rgba(0, 0, 0, 0.5);
 }
 .toggle_button__spotify {
 	@extend .toggle_button;
-	background-color : #65CC60;
+	background-color : #fdc086;
 }
 
 .toggle_button__mobile{
@@ -107,5 +109,5 @@ body {
 
 .toggle_button__other {
 	@extend .toggle_button;
-	background-color : #D8D8D8;
+	background-color : #666666;
 }

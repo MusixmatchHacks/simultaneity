@@ -49,13 +49,13 @@ let colorManager = {
 	 */
 	osColors : {
 		'color_windows' : '#0670C4',
-		'color_website' : '#ED462F',
-		'color_android' : '#A4C639',
+		'color_android' : '#ED462F',
+		'color_website' : '#ffff99',
 		'color_ios' : '#55ACEE',
-		'color_azlyrics' : '#CCCCDD',
-		'color_spotify' : '#65CC60',
+		'color_azlyrics' : '#d8d8d8',
+		'color_spotify' : '#fdc086',
 		'color_mobile' : '#03509D',
-		'color_other' : '#D8D8D8'
+		'color_other' : '#666666'
 	},
 
 	/**
