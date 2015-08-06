@@ -99,12 +99,14 @@
 
 	var _WorldMap$getDimensions = WorldMap.getDimensions();
 
-	// Calls the API for data every two seconds and adds the data points to the map
-
 	var _WorldMap$getDimensions2 = _slicedToArray(_WorldMap$getDimensions, 2);
 
 	var width = _WorldMap$getDimensions2[0];
 	var height = _WorldMap$getDimensions2[1];
+
+	d3.selectAll('.os').attr('width', width).attr('height', height);
+
+	// Calls the API for data every two seconds and adds the data points to the map
 	setInterval(function () {
 		getDatPointPromise(dataUrl);
 	}, REQUEST_INTERVAL);
@@ -112,6 +114,7 @@
 	// let us add the click listeners to the toggle buttons
 	$('.toggle_buttons_container').children().each(function () {
 		$(this).on('click', function () {
+			$(this).toggleClass('toggle_button--selected');
 			var osToToggle = $(this).attr('data-os');
 			toggleOSVisibility(osToToggle);
 		});
@@ -316,7 +319,7 @@
 	'use strict';
 
 	var sampleData = __webpack_require__(3);
-	var osNameMaps = __webpack_require__(6);
+	var osNameMaps = __webpack_require__(4);
 
 	/**
 	 * A module to export functionality of retreiving various informations from a given requestId
@@ -42585,7 +42588,45 @@
 	}
 
 /***/ },
-/* 4 */,
+/* 4 */
+/***/ function(module, exports) {
+
+	/**
+	 * Stores names of the main services
+	 * @type {Object}
+	 * @memberof osNameMaps
+	 */
+	"use strict";
+
+	var main_service_names = {
+		"service_windows": "windows",
+		"service_website": "website",
+		"service_android": "android",
+		"service_ios": "ios",
+		"service_azlyrics": "azlyrics",
+		"service_spotify": "spotify",
+		"service_mobile": "mobile",
+		"service_other": "other"
+	};
+	/**
+	 * Maps ambiguous and redundant names to a more understandable serivce name.
+	 * @type {Object}
+	 * @namespace osNameMaps
+	 */
+	module.exports = {
+		"win7": main_service_names.service_window, "other": main_service_names.service_other,
+		"website": main_service_names.website, "mobile": main_service_names.service_mobile,
+		"nokia": main_service_names.service_mobile, "iphone": main_service_names.service_ios,
+		"android": main_service_names.service_android, "songtexte": main_service_names.service_other,
+		"win_desktop": main_service_names.service_windows, "mac_desktop": main_service_names.service_other,
+		"spotify": main_service_names.service_spotify, "ipad": main_service_names.service_ios,
+		"win8": main_service_names.service_windows, "google_glass": main_service_names.service_other,
+		"ios_clip": main_service_names.service_ios, "mxm_website": main_service_names.service_website,
+		"name": main_service_names.service_other, "azlyrics": main_service_names.service_azlyrics,
+		"mxm_chrome_ext": main_service_names.serivce_other
+	};
+
+/***/ },
 /* 5 */
 /***/ function(module, exports) {
 
@@ -42644,45 +42685,6 @@
 	};
 
 	module.exports = WorldMap;
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	/**
-	 * Stores names of the main services
-	 * @type {Object}
-	 * @memberof osNameMaps
-	 */
-	"use strict";
-
-	var main_service_names = {
-		"service_windows": "windows",
-		"service_website": "website",
-		"service_android": "android",
-		"service_ios": "ios",
-		"service_azlyrics": "azlyrics",
-		"service_spotify": "spotify",
-		"service_mobile": "mobile",
-		"service_other": "other"
-	};
-	/**
-	 * Maps ambiguous and redundant names to a more understandable serivce name.
-	 * @type {Object}
-	 * @namespace osNameMaps
-	 */
-	module.exports = {
-		"win7": main_service_names.service_window, "other": main_service_names.service_other,
-		"website": main_service_names.website, "mobile": main_service_names.service_mobile,
-		"nokia": main_service_names.service_mobile, "iphone": main_service_names.service_ios,
-		"android": main_service_names.service_android, "songtexte": main_service_names.service_other,
-		"win_desktop": main_service_names.service_windows, "mac_desktop": main_service_names.service_other,
-		"spotify": main_service_names.service_spotify, "ipad": main_service_names.service_ios,
-		"win8": main_service_names.service_windows, "google_glass": main_service_names.service_other,
-		"ios_clip": main_service_names.service_ios, "mxm_website": main_service_names.service_website,
-		"name": main_service_names.service_other, "azlyrics": main_service_names.service_azlyrics,
-		"mxm_chrome_ext": main_service_names.serivce_other
-	};
 
 /***/ }
 /******/ ]);
