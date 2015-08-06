@@ -20,8 +20,7 @@ body {
 #os_container {
   position: absolute;
   top: 0;
-  left: 0;
-  z-index: 10000; }
+  left: 0; }
 
 .hidden {
   visibility: hidden; }
@@ -41,7 +40,7 @@ body {
   position: absolute;
   top: 10px;
   left: 10px;
-  z-index: 9999999; }
+  z-index: 999; }
 
 .toggle_button, .toggle_button__windows, .toggle_button__website, .toggle_button__android, .toggle_button__ios, .toggle_button__azlyrics, .toggle_button__spotify, .toggle_button__mobile, .toggle_button__other {
   width: auto;
@@ -55,32 +54,35 @@ body {
   line-height: 25px;
   border-radius: 2px;
   opacity: 0.35;
-  transition: all 0.2s; }
+  transition: all 0.2s;
+  user-select: none; }
 
 .toggle_button--selected {
   opacity: 1;
   transition: all 0.15s; }
 
 .toggle_button__windows {
-  background-color: #0670C4; }
+  background-color: #f781bf; }
 
 .toggle_button__website {
-  background-color: #ED462F; }
+  background-color: #ffff99;
+  color: rgba(0, 0, 0, 0.6); }
 
 .toggle_button__android {
-  background-color: #A4C639; }
+  background-color: #ED462F; }
 
 .toggle_button__ios {
   background-color: #55ACEE; }
 
 .toggle_button__azlyrics {
-  background-color: #CCCCDD; }
+  background-color: #d8d8d8;
+  color: rgba(0, 0, 0, 0.5); }
 
 .toggle_button__spotify {
-  background-color: #65CC60; }
+  background-color: #fdc086; }
 
 .toggle_button__mobile {
   background-color: #03509D; }
 
 .toggle_button__other {
-  background-color: #D8D8D8; }
+  background-color: #666666; }
